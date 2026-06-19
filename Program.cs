@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Data.Common;
-using System.Runtime.InteropServices;
 
 namespace ReadOnlyIdGeneratorSys
 {
@@ -23,22 +21,37 @@ namespace ReadOnlyIdGeneratorSys
     {
         static void Main(string[] arg)
         {
-            int amount = AskForAmount("Enter number of products: ");
-            for(int i = 1; i <= amount; i++)
-            {
-                string name = AskForName("Enter products name: ");
-                Product product = new Product(name);
-                Console.WriteLine($"Product: {product.Name} | Product ID: {product.Id}");
-            }
-        }
-        static int AskForAmount(string message)
-        {
+            List<Product> productList = new List<Product>();
+
             while (true)
             {
-                Console.Write(message);
-                if(int.TryParse(Console.ReadLine(), out int amount) && amount > 0)
+                int choice = Menu("\nMenu:\n1. Add product\n2. Show products\n3. Exit\n");
+
+                if (choice == 1)
                 {
-                    return amount;
+                    string name = AskForName("Enter product name: ");
+                    Product product = new Product(name);
+                    productList.Add(product);
+                    Console.WriteLine($"{product.Name} was added successfully.");
+                }
+                else if (choice == 2)
+                {
+                    if (productList.Count == 0)
+                    {
+                        Console.WriteLine("No data available.");
+                    }
+                    else
+                    {
+                        foreach (Product p in productList)
+                        {
+                            Console.WriteLine($"Product: {p.Name} | Product ID: {p.Id}");
+                        }
+                    }
+                }
+                else if (choice == 3)
+                {
+                    Console.WriteLine("Exiting...");
+                    break;
                 }
                 else
                 {
@@ -46,11 +59,23 @@ namespace ReadOnlyIdGeneratorSys
                 }
             }
         }
+        static int Menu(string message)
+        {
+            while (true)
+            {
+                Console.WriteLine(message);
+                if (int.TryParse(Console.ReadLine(), out int option) && option >= 1 && option <= 3)
+                {
+                    return option;
+                }
+                Console.WriteLine("Invalid value.");
+            }
+        }
         static string AskForName(string message)
         {
             while (true)
             {
-                System.Console.Write(message);
+                Console.Write(message);
                 string? name = Console.ReadLine();
                 if (!string.IsNullOrWhiteSpace(name))
                 {
