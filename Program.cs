@@ -10,7 +10,22 @@ namespace ReadOnlyIdGeneratorSys
 
         public Product(string name)
         {
-            Name = name.Trim();
+            name = name.Trim();
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                Name = "Unknown";
+            }
+            else
+            {
+                if(name.Length == 1)
+                {
+                    Name = char.ToUpper(name[0]).ToString();
+                }
+                else
+                {
+                    Name = char.ToUpper(name[0]) + name[1..].ToLower();
+                }
+            }
             Id = counter;
             counter++;
         }
@@ -21,7 +36,7 @@ namespace ReadOnlyIdGeneratorSys
     {
         static void Main(string[] arg)
         {
-            List<Product> productList = new List<Product>();
+            var productList = new List<Product>();
 
             while (true)
             {
@@ -30,7 +45,7 @@ namespace ReadOnlyIdGeneratorSys
                 if (choice == 1)
                 {
                     string name = AskForName("Enter product name: ");
-                    Product product = new Product(name);
+                    Product product = new(name);
                     productList.Add(product);
                     Console.WriteLine($"{product.Name} was added successfully.");
                 }
@@ -44,9 +59,10 @@ namespace ReadOnlyIdGeneratorSys
                     {
                         foreach (Product p in productList)
                         {
-                            Console.WriteLine($"Product: {p.Name} | Product ID: {p.Id}");
+                            Console.WriteLine($"ID: {p.Id} | Name: {p.Name}");
                         }
                     }
+                    Console.WriteLine();
                 }
                 else if (choice == 3)
                 {
